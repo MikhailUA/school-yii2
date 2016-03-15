@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Comment;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -69,6 +70,22 @@ class SiteController extends Controller
         ]);
     }
 
+    public function actionShow($id) {
+        if($user = User::findOne($id)) {
+
+            echo $user->email;
+
+            if($user instanceof User) {
+                var_dump($user);
+                echo $user->email;
+                //$user->em
+            }
+
+            //echo $
+
+        }
+    }
+
     public function actionLogout()
     {
         Yii::$app->user->logout();
@@ -76,7 +93,58 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
+    public function actionAdd() {
+        //User::findOne([...])
+        //User::findAll([...])
+
+        $user = new User();
+
+//        $user->createdAt = date('Y-m-d H:i:s');
+        $user->updatedAt = date('Y-m-d H:i:s');
+
+        if($user->load(Yii::$app->request->post()) && $user->validate()) {
+
+
+            $user->save();
+            ///$user->passwordHash = '';
+        }
+
+        return $this->render('add', [
+            'model' => $user,
+        ]);
+    }
+
     public function actionFoo() {
+
+//        $users = User::findAll([
+//            'authKey' => null,
+//            'firstName' => 'Vasia'
+//        ]);
+
+        $user = User::find()->where(['firstName' => 'Vasia'])->one();
+        //$user->email = 'hohohohoh@fsdfdsf.ccc';
+        //echo $user->email;
+        $user = new User();
+        $user->email = 'sadsadsad@asdasd.ccc';
+        $user->firstName = 'sadasdasd';
+        $user->lastName = "dsfsdfdsf";
+        $user->passwordHash = 'sadsad';
+        $user->createdAt = date('Y-m-d H:i:s');
+        $user->updatedAt = date('Y-m-d H:i:s');
+        $user->save(false);
+
+        //$user->save(false);
+        die;
+
+
+        //var_dump($user);
+        //die;
+
+        //var_dump($users);
+        //die;
+        //throw new \Exception('sadhasudhsad')
+
+        //return $foo;
 
         return $this->render('foo');
         //return 'Hello';
@@ -84,6 +152,7 @@ class SiteController extends Controller
 
     public function actionContact()
     {
+        //Yii::$app->session->addFlash('contactFormSubmitted', 'HELLO!');
         $model = new ContactForm();
         if ($model->load(Yii::$app->request->post()) && $model->contact(Yii::$app->params['adminEmail'])) {
             Yii::$app->session->setFlash('contactFormSubmitted');
@@ -98,6 +167,7 @@ class SiteController extends Controller
     public function actionAbout()
     {
         $model = new Comment();
+
 
         if($model->load(Yii::$app->request->post()) && $model->validate()) {
             var_dump($model->name);

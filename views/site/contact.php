@@ -7,6 +7,7 @@
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 use yii\captcha\Captcha;
+use yii\helpers\Url;
 
 $this->title = 'Contact';
 $this->params['breadcrumbs'][] = $this->title;
@@ -41,7 +42,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <div class="row">
             <div class="col-lg-5">
 
-                <?php $form = ActiveForm::begin(['id' => 'contact-form']); ?>
+                <a title="hello" href="<?php echo Url::toRoute(['/site/foo', 'foo' => 'bar']) ?>" class="btn btn-default">Hello</a>
+
+                <?php echo Html::a('To about', ['/site/foo', 'foo' => 'bar'], ['class' => 'btn btn-primary', 'title' => 'Hello']) ?>
+
+                <?php $form = ActiveForm::begin(['id' => 'contact-form',]); ?>
 
                     <?= $form->field($model, 'name')->textInput(['autofocus' => true]) ?>
 

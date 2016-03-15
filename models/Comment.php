@@ -14,8 +14,6 @@ class Comment extends Model {
             [['email', 'name', 'text'], 'required'],
             ['email', 'email'],
             ['name', 'string', 'min' => 3, 'tooShort' => 'Go away!'],
-//            ['name', 'required'],
-//            ['text', 'required'],
         ];
     }
 
