@@ -52,6 +52,37 @@ class SiteController extends Controller
 
     public function actionIndex()
     {
+        //var_dump(Yii::$app->user->identity->email);
+        //die;
+        if(!Yii::$app->user->isGuest) {
+            return $this->render('foo');
+        }
+        //Yii::$app->user->log
+
+//        if(Yii::$app->request->cookies->get('notGuest')) {
+//            return $this->render('sajdsajdkas');
+//
+//        } else {
+//            return $this->render('asdsadasd');
+//        }
+
+//        $model = new User([
+//            'scenario' => 'safe',
+//            'attributes' => [
+//                'firstName' => 'fff',
+//                'lastName' => 'ddd',
+//                'email' => 'asdasdasdsa@saddsad.ccc',
+//                'passwordHash' => 'sddasdsada',
+//            ],
+//        ]);
+//
+//        $model->save();
+//
+//        $model->firstName = 'Vasia';
+//        $model->save();
+
+
+
         return $this->render('index');
     }
 
@@ -91,6 +122,22 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionRegister() {
+        $model = new User([
+            'scenario' => 'register'
+        ]);
+        //$model->setScenario('register');
+
+        if($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->user->login($model, 60 * 60 * 24 * 30);
+            return $this->goHome();
+        }
+
+        return $this->render('register', [
+            'model' => $model,
+        ]);
     }
 
     public function actionAdd() {
