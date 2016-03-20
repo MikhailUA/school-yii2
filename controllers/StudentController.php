@@ -12,6 +12,7 @@ Class StudentController extends Controller
     {
         $model = new Student();
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
+            $model->save();
             return $this->render('entry-confirm', ['model' => $model]);
         } else {
             return $this->render('entry', ['model' => $model]);
