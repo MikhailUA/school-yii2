@@ -6,6 +6,7 @@ use yii\helpers\Html;
 
 $this->title = 'About';
 $this->params['breadcrumbs'][] = $this->title;
+$this->params['breadcrumbs'][] = 'HELLO';
 ?>
 <div class="site-about">
 <!--    <form method="POST">-->

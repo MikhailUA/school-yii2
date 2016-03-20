@@ -7,6 +7,10 @@ $config = [
     'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+
+    //'defaultRoute' => '/site/register',
+    //'catchAll' => ['/site/register'],
+
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -42,7 +46,11 @@ $config = [
    /*     'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            //'dashboard' => 'main/index',
             'rules' => [
+                '/register' => '/site/register',
+                '/site/show/<id:\d+>' => '/site/show',
+                '/id<id:\d+>' => '/site/show'
             ],
         ],*/
 
@@ -50,17 +58,17 @@ $config = [
     'params' => $params,
 ];
 
-if (YII_ENV_DEV) {
-    // configuration adjustments for 'dev' environment
-    $config['bootstrap'][] = 'debug';
-    $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module',
-    ];
-
-    $config['bootstrap'][] = 'gii';
-    $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module',
-    ];
-}
+//if (YII_ENV_DEV) {
+//    // configuration adjustments for 'dev' environment
+//    $config['bootstrap'][] = 'debug';
+//    $config['modules']['debug'] = [
+//        'class' => 'yii\debug\Module',
+//    ];
+//
+//    $config['bootstrap'][] = 'gii';
+//    $config['modules']['gii'] = [
+//        'class' => 'yii\gii\Module',
+//    ];
+//}
 
 return $config;
