@@ -4,8 +4,9 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use yii\db\ActiveRecord;
 
-class Teacher extends Model
+/*class Teacher extends Model
 {
     public $firstname;
     public $lastname;
@@ -19,4 +20,16 @@ class Teacher extends Model
             ['email', 'email']
         ];
     }
+}*/
+
+class Teacher extends ActiveRecord{
+
+    public function rules()
+    {
+        return [
+            [['firstname', 'lastname', 'faculty'], 'required'],
+            ['email', 'email']
+        ];
+    }
 }
+
