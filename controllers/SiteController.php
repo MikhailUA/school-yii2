@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Comment;
+use app\models\User;
 use Yii;
 use yii\filters\AccessControl;
 use yii\web\Controller;
@@ -23,7 +24,7 @@ class SiteController extends Controller
                     [
                         'actions' => ['logout'],
                         'allow' => true,
-                        'roles' => ['@'],
+                        'roles' => ['@'], // @ означает зарегистрир пользователь
                     ],
                 ],
             ],
@@ -112,6 +113,34 @@ class SiteController extends Controller
     public function actionSay($message = 'Hello'){
         return $this->render('say', [
             'message' => $message
+        ]);
+    }
+
+    public function actionAdd() {
+        //User::findOne([...])
+        //User::findAll([...])
+
+        $user = new User();
+
+//        $user->createdAt = date('Y-m-d H:i:s');
+        $user->updatedAt = date('Y-m-d H:i:s');
+
+        if($user->load(Yii::$app->request->post()) && $user->validate()) {
+
+
+            $user->save();
+            ///$user->passwordHash = '';
+        }
+
+        return $this->render('add', [
+            'model' => $user,
+        ]);
+    }
+
+    public function actionRegister(){
+        $model = new User();
+        return $this->render('register', [
+            'model' => $model,
         ]);
     }
 }
