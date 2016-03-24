@@ -54,6 +54,7 @@ class SiteController extends Controller
     public function actionRegister(){
         $model = new User();
         if ($model->load(yii::$app->request->post()) && $model->save()){
+            Yii::$app->user->login($model);
             return $this->render('index');
         }else{
             return $this->render('register',['model'=>$model]);
