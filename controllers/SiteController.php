@@ -8,7 +8,9 @@ use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use app\models\LoginForm;
+use app\models\User;
 use app\models\ContactForm;
+//use yii\web\User;
 
 
 class SiteController extends Controller
@@ -48,6 +50,17 @@ class SiteController extends Controller
             ],
         ];
     }
+
+    public function actionRegister(){
+        $model = new User();
+        if ($model->load(yii::$app->request->post()) && $model->save()){
+            return $this->render('index');
+        }else{
+            return $this->render('register',['model'=>$model]);
+        }
+
+    }
+
 
     public function actionIndex()
     {
