@@ -2,12 +2,15 @@
 
 namespace app\models;
 
+use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
 Class User extends ActiveRecord implements IdentityInterface{
 
     public $passwordConfirm;
+    public $rememberMe;
+    public $password;
 
     public static function tableName () {
         return 'user';
@@ -17,17 +20,41 @@ Class User extends ActiveRecord implements IdentityInterface{
         return[
             [['email','firstName','lastName','passwordHash','passwordConfirm','role'],'required'],
             ['email','email'],
-          //  [['createdAt','updatedAt'],'safe'],
-            ['passwordConfirm','compare','compareAttribute' => 'passwordHash','message' => 'пароли не совпадают']
+            ['passwordConfirm','compare','compareAttribute' => 'passwordHash','message' => 'пароли не совпадают'],
+            [['firstName','password'],'required','on' => 'login'],
+            ['password','validatePassword','on' => 'login'],
+            ['rememberMe', 'boolean', 'on' => 'login']
         ];
     }
+
+    public function validatePassword($attribute, $params){
+        if ($user=User::findOne(['firstName' => $this->firstName])){
+            if (Yii::$app->security->validatePassword($this->password,$user->passwordHash)){
+                return true;
+            }else{
+                $this->addError($attribute, 'Incorrect username or password');
+            }
+        }
+    }
+
+    public function login (){
+        if ($this->validate()){
+            return Yii::$app->user->login($this->getUser, $this->rememberMe ? 3600*24*30 : 0);
+        }
+        return false;
+    }
+
+    public function getUser(){
+        return User::findOne(['firstName'=>$this->firstName]);
+    }
+
 
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord){
                 $this->authkey = \Yii::$app->security->generateRandomString();
-                $this->passwordHash=\Yii::$app->security->generatePasswordHash($this->passwordHash);
+                //$this->passwordHash=\Yii::$app->security->generatePasswordHash($this->passwordHash);
                 $this->createdAt=date('Y-m-d H:i:s');
                 $this->updatedAt=date('Y-m-d H:i:s');
             }
