@@ -18,34 +18,36 @@ Class User extends ActiveRecord implements IdentityInterface{
 
     public function rules(){
         return[
-            [['email','firstName','lastName','passwordHash','passwordConfirm','role'],'required'],
-            ['email','email'],
-            ['passwordConfirm','compare','compareAttribute' => 'passwordHash','message' => 'пароли не совпадают'],
-            [['firstName','password'],'required','on' => 'login'],
+            [['email','firstName','lastName','passwordHash','passwordConfirm','role'],'required','on' => 'register'],
+            ['email','email','on' => 'register'],
+            ['passwordConfirm','compare','compareAttribute' => 'passwordHash','message' => 'пароли не совпадают','on' => 'register'],
+            [['email','password'],'required','on' => 'login'],
+            ['email','email','on' => 'login'],
             ['password','validatePassword','on' => 'login'],
             ['rememberMe', 'boolean', 'on' => 'login']
         ];
     }
 
     public function validatePassword($attribute, $params){
-        if ($user=User::findOne(['firstName' => $this->firstName])){
+        if ($user=User::findOne(['email' => $this->email])){
             if (Yii::$app->security->validatePassword($this->password,$user->passwordHash)){
                 return true;
-            }else{
-                $this->addError($attribute, 'Incorrect username or password');
             }
+        }else{
+            $this->addError($attribute, 'Incorrect username or password');
         }
     }
 
     public function login (){
+        $v=$this->validate();
         if ($this->validate()){
-            return Yii::$app->user->login($this->getUser, $this->rememberMe ? 3600*24*30 : 0);
+            return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
         return false;
     }
 
     public function getUser(){
-        return User::findOne(['firstName'=>$this->firstName]);
+        return User::findOne(['email'=>$this->email]);
     }
 
 
@@ -54,7 +56,7 @@ Class User extends ActiveRecord implements IdentityInterface{
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord){
                 $this->authkey = \Yii::$app->security->generateRandomString();
-                //$this->passwordHash=\Yii::$app->security->generatePasswordHash($this->passwordHash);
+                $this->passwordHash=\Yii::$app->security->generatePasswordHash($this->passwordHash);
                 $this->createdAt=date('Y-m-d H:i:s');
                 $this->updatedAt=date('Y-m-d H:i:s');
             }

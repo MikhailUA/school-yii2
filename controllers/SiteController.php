@@ -53,6 +53,7 @@ class SiteController extends Controller
 
     public function actionRegister(){
         $model = new User();
+        $model->scenario='register';
         if ($model->load(yii::$app->request->post()) && $model->save()){
             Yii::$app->user->login($model);
             return $this->render('index');
@@ -76,7 +77,6 @@ class SiteController extends Controller
 
         $model = new User();
         $model->scenario='login';
-        $model->load(Yii::$app->request->post());
             if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
