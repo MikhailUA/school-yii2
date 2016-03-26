@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\Comment;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -51,18 +52,18 @@ class SiteController extends Controller
         ];
     }
 
-    public function actionRegister(){
+    public function actionRegister()
+    {
         $model = new User();
-        $model->scenario='register';
-        if ($model->load(yii::$app->request->post()) && $model->save()){
+        $model->scenario = 'register';
+        if ($model->load(yii::$app->request->post()) && $model->save()) {
             Yii::$app->user->login($model);
             return $this->render('index');
-        }else{
-            return $this->render('register',['model'=>$model]);
+        } else {
+            return $this->render('register', ['model' => $model]);
         }
 
     }
-
 
     public function actionIndex()
     {
@@ -76,8 +77,8 @@ class SiteController extends Controller
         }
 
         $model = new User();
-        $model->scenario='login';
-            if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        $model->scenario = 'login';
+        if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
         }
         return $this->render('login', [
@@ -92,7 +93,8 @@ class SiteController extends Controller
         return $this->goHome();
     }
 
-    public function actionFoo() {
+    public function actionFoo()
+    {
 
         return $this->render('foo');
         //return 'Hello';
@@ -115,7 +117,7 @@ class SiteController extends Controller
     {
         $model = new Comment();
 
-        if($model->load(Yii::$app->request->post()) && $model->validate()) {
+        if ($model->load(Yii::$app->request->post()) && $model->validate()) {
             var_dump($model->name);
             die;
         }
@@ -125,9 +127,11 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionSay($message = 'Hello'){
+    public function actionSay($message = 'Hello')
+    {
         return $this->render('say', [
             'message' => $message
         ]);
     }
 }
+

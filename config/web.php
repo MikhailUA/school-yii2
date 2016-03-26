@@ -39,12 +39,13 @@ $config = [
             ],
         ],
         'db' => require(__DIR__ . '/db.php'),
-   /*     'urlManager' => [
+        'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                //'/user/edit/<id:\d+>' => '/user/edit'
             ],
-        ],*/
+        ],
 
     ],
     'params' => $params,
