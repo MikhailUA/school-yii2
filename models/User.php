@@ -21,6 +21,7 @@ Class User extends ActiveRecord implements IdentityInterface{
             [['email','firstName','lastName','passwordHash','passwordConfirm','role'],'required','on' => 'register'],
             ['email','email','on' => 'register'],
             ['passwordConfirm','compare','compareAttribute' => 'passwordHash','message' => 'пароли не совпадают','on' => 'register'],
+
             [['email','password'],'required','on' => 'login'],
             ['email','email','on' => 'login'],
             ['password','validatePassword','on' => 'login'],
@@ -39,7 +40,6 @@ Class User extends ActiveRecord implements IdentityInterface{
     }
 
     public function login (){
-        $v=$this->validate();
         if ($this->validate()){
             return Yii::$app->user->login($this->getUser(), $this->rememberMe ? 3600*24*30 : 0);
         }
@@ -49,35 +49,22 @@ Class User extends ActiveRecord implements IdentityInterface{
     public function getUser(){
         return User::findOne(['email'=>$this->email]);
     }
-
-
+    
     public function beforeSave($insert)
     {
         if (parent::beforeSave($insert)) {
-            if ($this->isNewRecord){
+            if ($this->isNewRecord) {
                 $this->authkey = \Yii::$app->security->generateRandomString();
-                $this->passwordHash=\Yii::$app->security->generatePasswordHash($this->passwordHash);
-                $this->createdAt=date('Y-m-d H:i:s');
-                $this->updatedAt=date('Y-m-d H:i:s');
+                $this->passwordHash = \Yii::$app->security->generatePasswordHash($this->passwordHash);
+                $this->createdAt = date('Y-m-d H:i:s');
+                $this->updatedAt = date('Y-m-d H:i:s');
             }
             return true;
         } else {
-            $this->updatedAt=date('Y-m-d H:i:s');
+            $this->updatedAt = date('Y-m-d H:i:s');
             return false;
         }
-
-
-/*        if($insert) {
-            $this->createdAt = date('Y-m-d H:i:s');
-            $this->passwordHash = \Yii::$app->security->generatePasswordHash($this->passwordHash);
-            $this->authkey = \Yii::$app->security->generateRandomString();
-        }
-
-        $this->updatedAt = date('Y-m-d H:i:s');
-
-        return parent::beforeSave($insert);*/
     }
-
     /**
      * Finds an identity by the given ID.
      *
