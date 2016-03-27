@@ -11,8 +11,6 @@ use yii\web\UploadedFile;
 
 Class UserController extends Controller
 {
-
-
     public function actionList()
     {
         $query = User::find();

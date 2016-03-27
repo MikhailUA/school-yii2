@@ -25,6 +25,7 @@ Class User extends ActiveRecord implements IdentityInterface
         return [
             [['email', 'firstName', 'lastName', 'passwordHash', 'passwordConfirm', 'role'], 'required', 'on' => 'register'],
             ['email', 'email', 'on' => 'register'],
+            ['email', 'validateUserByEmail', 'on' => 'register'],
             ['passwordConfirm', 'compare', 'compareAttribute' => 'passwordHash', 'message' => 'пароли не совпадают', 'on' => 'register'],
 
             [['email', 'password'], 'required', 'on' => 'login'],
@@ -54,6 +55,14 @@ Class User extends ActiveRecord implements IdentityInterface
             }
         } else {
             $this->addError($attribute, 'Incorrect username or password');
+        }
+    }
+
+    public function validateUserByEmail($attribute,$params){
+        if (!User::findOne(['email' => $this->email])){
+            return true;
+        }else{
+            $this->addError($attribute, 'User with this email already exists');
         }
     }
 

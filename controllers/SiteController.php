@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use ReCaptcha\ReCaptcha;
 use app\models\Comment;
 use Yii;
 use yii\data\ActiveDataProvider;
@@ -57,27 +58,37 @@ class SiteController extends Controller
         $model = new User();
         $model->scenario = 'register';
 
-        if ($model->load(yii::$app->request->post()) && $model->save()) {
+        if ($model->load(yii::$app->request->post())) {
 
-            Yii::$app->user->login($model);
+            $recaptcha = new ReCaptcha(Yii::$app->params['recaptcha']['secret']);
+            $gRecaptchaResponce = Yii::$app->request->post('g-recaptcha-response');
+            $resp = $recaptcha->verify($gRecaptchaResponce, $_SERVER['REMOTE_ADDR']);
 
-            Yii::$app->mailer->compose('welcome',[
-                'firstName' => $model->firstName,
-                'lastName' => $model->lastName,
-                'email' => $model->email,
-                'role' => $model->role,
-                'password' => $model->password
-                ])
-                ->setFrom('m.danilevskiy@gmail.com')
-                ->setTo($model->email)
-                ->setSubject('Registration')
-                ->send();
+            if ($resp->isSuccess()) {
+                // verified!
+                if ($model->save()) {
+                    Yii::$app->mailer->compose('welcome', [
+                        'firstName' => $model->firstName,
+                        'lastName' => $model->lastName,
+                        'email' => $model->email,
+                        'role' => $model->role,
+                        'password' => $model->password
+                    ])
+                        ->setFrom(Yii::$app->params['adminEmail'])
+                        ->setTo($model->email)
+                        ->setSubject('Registration')
+                        ->send();
 
-            return $this->render('index');
-        } else {
-            return $this->render('register', ['model' => $model]);
+                    Yii::$app->user->login($model);
+
+                    return $this->goHome();
+                }
+            } else {
+                $model->addError('email', 'You are bot!');
+                // $errors = $resp->getErrorCodes();
+            }
         }
-
+        return $this->render('register', ['model' => $model]);
     }
 
     public function actionIndex()
