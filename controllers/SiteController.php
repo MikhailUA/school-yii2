@@ -56,8 +56,23 @@ class SiteController extends Controller
     {
         $model = new User();
         $model->scenario = 'register';
+
         if ($model->load(yii::$app->request->post()) && $model->save()) {
+
             Yii::$app->user->login($model);
+
+            Yii::$app->mailer->compose('welcome',[
+                'firstName' => $model->firstName,
+                'lastName' => $model->lastName,
+                'email' => $model->email,
+                'role' => $model->role,
+                'password' => $model->password
+                ])
+                ->setFrom('m.danilevskiy@gmail.com')
+                ->setTo($model->email)
+                ->setSubject('Registration')
+                ->send();
+
             return $this->render('index');
         } else {
             return $this->render('register', ['model' => $model]);

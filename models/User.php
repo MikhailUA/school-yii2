@@ -74,6 +74,7 @@ Class User extends ActiveRecord implements IdentityInterface
     {
         if ($this->isNewRecord) {
             $this->authkey = \Yii::$app->security->generateRandomString();
+            $this->password=$this->passwordHash;
             $this->passwordHash = \Yii::$app->security->generatePasswordHash($this->passwordHash);
             $this->createdAt = date('Y-m-d H:i:s');
             $this->updatedAt = date('Y-m-d H:i:s');
