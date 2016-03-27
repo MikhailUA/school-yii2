@@ -5,6 +5,7 @@ namespace app\controllers;
 use yii;
 use yii\web\Controller;
 use app\models\User;
+use app\models\UserSearch;
 use yii\data\ActiveDataProvider;
 use yii\web\UploadedFile;
 
@@ -19,7 +20,16 @@ Class UserController extends Controller
             'query' => $query
         ]);
 
-        return $this->render('list', ['provider' => $provider]);
+        $searchModel = new UserSearch();
+
+        if (Yii::$app->request->get()){
+            $provider = $searchModel->search(Yii::$app->request->get());
+        }
+
+        return $this->render('list', [
+            'provider' => $provider,
+            'searchModel' => $searchModel,
+        ]);
     }
 
     public function actionEdit($id)

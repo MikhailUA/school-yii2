@@ -5,9 +5,10 @@ use yii\helpers\Html;
 
 echo GridView::widget([
     'dataProvider' => $provider,
+    'filterModel' => $searchModel,
     'columns' => [
         ['class' => 'yii\grid\SerialColumn'],
-        'id',
+        //'id',
         'firstName',
         'lastName',
         'email',
