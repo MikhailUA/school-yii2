@@ -62,7 +62,7 @@ class SiteController extends Controller
 
             $recaptcha = new ReCaptcha(Yii::$app->params['recaptcha']['secret']);
             $gRecaptchaResponce = Yii::$app->request->post('g-recaptcha-response');
-            $resp = $recaptcha->verify($gRecaptchaResponce, $_SERVER['REMOTE_ADDR']);
+            $resp = $recaptcha->verify($gRecaptchaResponce, Yii::$app->request->userIP);
 
             if ($resp->isSuccess()) {
                 // verified!
