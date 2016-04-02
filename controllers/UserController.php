@@ -20,7 +20,7 @@ Class UserController extends Controller
 
         $searchModel = new UserSearch();
 
-        if (Yii::$app->request->get()){
+        if (Yii::$app->request->get()) {
             $provider = $searchModel->search(Yii::$app->request->get());
         }
 
@@ -30,22 +30,22 @@ Class UserController extends Controller
         ]);
     }
 
+
     public function actionEdit($id)
     {
-
         if ($user = User::findOne($id)) {
             $user->scenario = 'edit';
-
             if ($user->load(\Yii::$app->request->post())) {
-
                 if ($user->imageFile = UploadedFile::getInstance($user, 'imageFile')) {
+                    $user->avatar = $user->imageFile->baseName . time() . '.' . $user->imageFile->extension;
                     $user->upload();
+                    $user->save(false);
+                } else {
+                    $user->save();
                 }
 
-                $user->save();
                 return $this->redirect(['/user/list']);
             }
-
             return $this->render('edit', [
                 'model' => $user]);
         }
