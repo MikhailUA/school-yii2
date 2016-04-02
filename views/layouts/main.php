@@ -44,6 +44,7 @@ AppAsset::register($this);
             ['label' => 'Teacher', 'url' => ['/teacher/entry']],
             ['label' => 'Register', 'url' => ['/site/register']],
             ['label' => 'Users List','url' =>['/user/list']],
+            ['label' => 'Users Ajax Search','url' =>['/site/userajaxsearch']],
             Yii::$app->user->isGuest ? (
                 ['label' => 'Login', 'url' => ['/site/login']]
             ) : (

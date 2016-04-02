@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\UserAjaxSearch;
 use ReCaptcha\ReCaptcha;
 use app\models\Comment;
 use Yii;
@@ -51,6 +52,17 @@ class SiteController extends Controller
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
             ],
         ];
+    }
+
+    public function actionUserajaxsearch(){
+
+        if ($search=Yii::$app->request->post('search')) {
+            $users = User::find()->where(['like', 'firstName', $search])->orWhere(['like','lastName', $search])->asArray()->all();
+            return json_encode($users);
+        }else{
+            return $this->render('userajaxsearch');
+        }
+
     }
 
     public function actionRegister()
